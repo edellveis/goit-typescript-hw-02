@@ -1,0 +1,13 @@
+.friend{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.online {
+    color: green;
+}
+
+.offline {
+    color: red;
+}
