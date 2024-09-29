@@ -1,25 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Description from './components/Description/Description';
+import Feedback from './components/Feedback/Feedback';
+import Notification from './components/Notification/Notification';
+import Options from './components/Options/Options';
 
-import Profile from './components/Profile/Profile';
-import FriendList from './components/FriendLIst/FriendList';
-import TransactionHistory from './components/TransactionHistory/TransactionHistory';
-
-import userData from './userData.json';
-import friendList from './friendList.json'; 
-import transactions from './transactions.json'
 function App() {
+  const [feedback, setFeedback] = useState({
+    good: 0,
+    neutral: 0,
+    bad: 0,
+  });
+
+  const updateFeedback = (feedbackType) => {
+    setFeedback((prevState) => {
+      const updatedFeedback = {
+        ...prevState,
+        [feedbackType]: prevState[feedbackType] + 1,
+      };
+      console.log('Updated Feedback:', updatedFeedback); // Додано лог
+      return updatedFeedback;
+    });
+  };
+
+  const resetFeedback = () => {
+    setFeedback({
+      good: 0,
+      neutral: 0,
+      bad: 0,
+    });
+  };
+
+  const totalFeedback = feedback.good + feedback.neutral + feedback.bad;
+  const positivePercentage = totalFeedback
+    ? Math.round((feedback.good / totalFeedback) * 100)
+    : 0;
+
+  // Local Storage
+  useEffect(() => {
+    const savedFeedback = JSON.parse(localStorage.getItem('feedback'));
+    if (savedFeedback) {
+      setFeedback(savedFeedback);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log('Saving to localStorage:', feedback); // Додано лог
+    localStorage.setItem('feedback', JSON.stringify(feedback));
+  }, [feedback]);
+
   return (
-    <>
-      <Profile
-        name={userData.username}
-        tag={userData.tag}
-        location={userData.location}
-        image={userData.avatar}
-        stats={userData.stats}
-      />
-      <FriendList friendList={friendList} /> 
-      <TransactionHistory items={transactions} />
-    </>
+    <div>
+      <Description />
+      <Options updateFeedback={updateFeedback} totalFeedback={totalFeedback} resetFeedback={resetFeedback} />
+      {totalFeedback > 0 ? (
+        <Feedback
+          totalFeedback={totalFeedback}
+          positivePercentage={positivePercentage}
+          feedback={feedback}
+        />
+      ) : (
+        <Notification />
+      )}
+    </div>
   );
 }
 
