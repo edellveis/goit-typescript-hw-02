@@ -5,10 +5,9 @@ import Notification from './components/Notification/Notification';
 import Options from './components/Options/Options';
 
 function App() {
-  const [feedback, setFeedback] = useState({
-    good: 0,
-    neutral: 0,
-    bad: 0,
+  const [feedback, setFeedback] = useState(() => {
+    const savedFeedback = localStorage.getItem('feedback');
+    return savedFeedback ? JSON.parse(savedFeedback) : { good: 0, neutral: 0, bad: 0 };
   });
 
   const updateFeedback = (feedbackType) => {
@@ -17,7 +16,6 @@ function App() {
         ...prevState,
         [feedbackType]: prevState[feedbackType] + 1,
       };
-      console.log('Updated Feedback:', updatedFeedback); // Додано лог
       return updatedFeedback;
     });
   };
@@ -35,23 +33,23 @@ function App() {
     ? Math.round((feedback.good / totalFeedback) * 100)
     : 0;
 
-  // Local Storage
-  useEffect(() => {
-    const savedFeedback = JSON.parse(localStorage.getItem('feedback'));
-    if (savedFeedback) {
-      setFeedback(savedFeedback);
-    }
-  }, []);
+
+
 
   useEffect(() => {
-    console.log('Saving to localStorage:', feedback); // Додано лог
-    localStorage.setItem('feedback', JSON.stringify(feedback));
+      localStorage.setItem('feedback', JSON.stringify(feedback));
   }, [feedback]);
+
+
+
 
   return (
     <div>
       <Description />
-      <Options updateFeedback={updateFeedback} totalFeedback={totalFeedback} resetFeedback={resetFeedback} />
+      <Options 
+        updateFeedback={updateFeedback}
+        totalFeedback={totalFeedback}
+        resetFeedback={resetFeedback} />
       {totalFeedback > 0 ? (
         <Feedback
           totalFeedback={totalFeedback}
