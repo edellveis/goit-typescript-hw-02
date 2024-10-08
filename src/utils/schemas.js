@@ -4,7 +4,7 @@ const phoneNumberRegex =
   /^[+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
 
 const nameRegex = /^[A-Za-zА-Яа-яЁёЇїІіЄєҐґ'-]+$/;
-export const ContactProfileShema = Yup.object().shepe({
+export const ContactProfileShema = Yup.object().shape({
   name: Yup.string()
     .min(3, "To Short!")
     .max(50, "To long!")
