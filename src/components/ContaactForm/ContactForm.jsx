@@ -1,22 +1,39 @@
 import React from "react";
 import style from "./ConctactForm.module.css";
-import { Formik, Form, Field } from "formik";
 
-export default function ContactForm({ initia_lValues }) {
-  initial_Values = {
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { ContactProfileShema } from "../../utils/schemas";
+
+export default function ContactForm({ handleSubmit }) {
+  const INITIA_VALUES = {
     name: "",
-    phone: "",
+    number: "",
   };
+
   return (
-    <Formik initialValues={{ initia_lValues }} onSubmit={() => {}}>
+    <Formik
+      initialValues={INITIA_VALUES}
+      onSubmit={handleSubmit}
+      validationSchema={ContactProfileShema}
+    >
       <Form className={style.form}>
         <label className={style.label}>
           <span>Name</span>
           <Field className={style.input} type="text" name="name" />
+          <ErrorMessage
+            className={style.errorMessage}
+            name="name"
+            component="span"
+          />
         </label>
         <label className={style.label}>
           <span>Phone</span>
-          <Field className={style.input} type="text" name="phone" />
+          <Field className={style.input} type="text" name="number" />
+          <ErrorMessage
+            className={style.errorMessage}
+            name="number"
+            component="span"
+          />
         </label>
         <button type="submit" className={style.formBtn}>
           Add contact

@@ -1,0 +1,9 @@
+.contactWaper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.conatactList {
+  margin-top: 15px;
+}

@@ -1,7 +1,7 @@
-body {
-  display: flex;
-  justify-content: center; /* Центрує вміст по горизонталі */
-  align-items: center; /* Центрує вміст по вертикалі */
-  height: 100vh; /* Займає всю висоту вікна */
-  margin: 0; /* Скидає відступи по замовчуванню */
+* {
+  padding: 0px;
+  margin: 0px;
+}
+ul {
+  list-style: none;
 }
