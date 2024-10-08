@@ -1,10 +1,10 @@
 import React from "react";
 import style from "./Contact.module.css";
 
-export default function Contact({ dataContact, removeContact }) {
+export default function Contact({ filterContact, removeContact }) {
   return (
     <div>
-      {dataContact.map((item) => (
+      {filterContact.map((item) => (
         <li key={item.id} className={style.ContactItem}>
           <p>{item.name}</p>
           <p>{item.number}</p>

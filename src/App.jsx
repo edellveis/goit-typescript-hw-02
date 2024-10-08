@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ContactForm from "./components/ContaactForm/ContactForm";
+import ContactForm from "./components/ContactForm/ContactForm";
 import SearchBox from "./components/SearchBox/SearchBox";
 import ContactList from "./components/ContactList/ContactList";
 import { nanoid } from "nanoid";
@@ -13,6 +13,7 @@ export default function App() {
     { id: "id-3", name: "Eden Clements", number: "645-17-79" },
     { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
   ];
+
   const [dataContact, setDataContact] = useState(() => {
     const localDataContact = localStorage.getItem("datacontact");
     return localDataContact ? JSON.parse(localDataContact) : state;
@@ -21,6 +22,10 @@ export default function App() {
     localStorage.setItem("datacontact", JSON.stringify(dataContact));
   }, [dataContact]);
 
+  const [filter, setFilter] = useState("");
+  const filterContact = dataContact.filter((contact) =>
+    contact.name.toLowerCase().includes(filter).trim()
+  );
   const handleSubmit = (values, action) => {
     const newContact = { id: nanoid(), ...values };
     setDataContact((prevstate) => [...prevstate, newContact]);
@@ -33,8 +38,12 @@ export default function App() {
     <div className={style.container}>
       <h1 className={style.title}>Phonebook</h1>
       <ContactForm handleSubmit={handleSubmit} />
-      <SearchBox />
-      <ContactList dataContact={dataContact} removeContact={removeContact} />
+      <SearchBox filter={filter} setFilter={setFilter} />
+      <ContactList
+        dataContact={dataContact}
+        removeContact={removeContact}
+        filter={filterContact}
+      />
     </div>
   );
 }
