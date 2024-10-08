@@ -31,7 +31,7 @@ export default function App() {
     setDataContact((prevstate) => [...prevstate, newContact]);
     action.resetForm();
   };
-  const removeContact = (idcontact) => {
+  const onDelete = (idcontact) => {
     setDataContact(dataContact.filter((item) => item.id !== idcontact));
   };
   return (
@@ -41,7 +41,7 @@ export default function App() {
       <SearchBox filter={filter} setFilter={setFilter} />
       <ContactList
         dataContact={dataContact}
-        removeContact={removeContact}
+        onDelete={onDelete}
         filterContact={filterContact}
       />
     </div>
