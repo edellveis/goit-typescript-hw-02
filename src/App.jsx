@@ -24,7 +24,7 @@ export default function App() {
 
   const [filter, setFilter] = useState("");
   const filterContact = dataContact.filter((contact) =>
-    contact.name.toLowerCase().includes(filter).trim()
+    contact.name.toLowerCase().includes(filter)
   );
   const handleSubmit = (values, action) => {
     const newContact = { id: nanoid(), ...values };
@@ -42,7 +42,7 @@ export default function App() {
       <ContactList
         dataContact={dataContact}
         removeContact={removeContact}
-        filter={filterContact}
+        filterContact={filterContact}
       />
     </div>
   );
