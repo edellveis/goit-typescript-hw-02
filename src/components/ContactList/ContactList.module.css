@@ -3,7 +3,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 32px;
 }
 .conatactList {
   margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
