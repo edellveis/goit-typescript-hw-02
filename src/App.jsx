@@ -1,48 +1,79 @@
-import React, { useEffect, useState } from "react";
-import ContactForm from "./components/ContactForm/ContactForm";
-import SearchBox from "./components/SearchBox/SearchBox";
-import ContactList from "./components/ContactList/ContactList";
-import { nanoid } from "nanoid";
+import SearchBar from "./components/SearchBar/SearchBar";
+import Loader from "./components/Loader/Loader";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import ImageGallery from "./components/ImageGallery/ImageGallery";
+import LoadMoreBtn from "./components/LoadMoreBtn/LaodMoreBtn";
+import ImageModal from "./components/imageModal/imageModal";
+import React, { useState } from "react";
+import axios from "axios";
 
-import style from "./App.module.css";
+export default function () {
+  const [dataImg, setDataImg] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(null);
 
-export default function App() {
-  const state = [
-    { id: "id-1", name: "Rosie Simpson", number: "459-12-56" },
-    { id: "id-2", name: "Hermione Kline", number: "443-89-12" },
-    { id: "id-3", name: "Eden Clements", number: "645-17-79" },
-    { id: "id-4", name: "Annie Copeland", number: "227-91-26" },
-  ];
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [loadmore, setLoadmore] = useState(false);
 
-  const [dataContact, setDataContact] = useState(() => {
-    const localDataContact = localStorage.getItem("datacontact");
-    return localDataContact ? JSON.parse(localDataContact) : state;
-  });
-  useEffect(() => {
-    localStorage.setItem("datacontact", JSON.stringify(dataContact));
-  }, [dataContact]);
+  const [page, setPage] = useState(1);
 
-  const [filter, setFilter] = useState("");
-  const filterContact = dataContact.filter((contact) =>
-    contact.name.toLowerCase().includes(filter)
-  );
-  const handleSubmit = (values, action) => {
-    const newContact = { id: nanoid(), ...values };
-    setDataContact((prevstate) => [...prevstate, newContact]);
-    action.resetForm();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [SelectedImg, setSelectedImg] = useState(null);
+
+  const accessKey = "ntaDh4XvlCZd5IIEV3dEPosC-Z1FD8sfmnLO8TiV6-E";
+  const getPhoto = async (value) => {
+    try {
+      setLoading(true);
+      setLoadmore(true);
+      const { data } = await axios.get(
+        `https://api.unsplash.com/search/photos?query=${value}&client_id=${accessKey}&page=${page}`
+      );
+      if (page === 1) {
+        setDataImg(data.results);
+      } else {
+        setDataImg((prevPhotos) => [...prevPhotos, ...data.results]);
+      }
+      setLoadmore(page < data.total_pages);
+    } catch (error) {
+      setLoadmore(false);
+      console.log(error);
+
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
-  const onDelete = (idcontact) => {
-    setDataContact(dataContact.filter((item) => item.id !== idcontact));
+
+  const loadMoreImages = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    getPhoto(searchTerm);
+  };
+  const onSubmit = (value) => {
+    setSearchTerm(value);
+    setPage(1);
+    setDataImg([]);
+    getPhoto(value);
+  };
+  const openModal = (imageUrl) => {
+    setSelectedImg(imageUrl);
+    setModalIsOpen(true);
+  };
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedImg(null);
   };
   return (
-    <div className={style.container}>
-      <h1 className={style.title}>Phonebook</h1>
-      <ContactForm handleSubmit={handleSubmit} />
-      <SearchBox filter={filter} setFilter={setFilter} />
-      <ContactList
-        dataContact={dataContact}
-        onDelete={onDelete}
-        filterContact={filterContact}
+    <div>
+      <SearchBar onSubmit={onSubmit} />
+      <ImageGallery dataImg={dataImg} openModal={openModal} />
+      {error && <ErrorMessage error={error} />}
+      {loading && <Loader />}
+      {loadmore && <LoadMoreBtn onClick={loadMoreImages} />}
+      <ImageModal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        imageUrl={SelectedImg}
       />
     </div>
   );
