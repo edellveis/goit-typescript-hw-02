@@ -3,7 +3,7 @@ import Loader from "./components/Loader/Loader";
 import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import LoadMoreBtn from "./components/LoadMoreBtn/LaodMoreBtn";
-import ImageModal from "./components/imageModal/imageModal";
+import ImageModal from "./components/ImageModal/ImageModal";
 import React, { useState } from "react";
 import axios from "axios";
 
